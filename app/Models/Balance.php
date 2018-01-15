@@ -4,24 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Balance extends Model
-{
-    public $timestamps = false;
+class Balance extends Model {
+	public $timestamps = false;
 
-    public function deposit(float $value) : Array
-    {
-      $this->amount += number_format($value, 2, '.', '');
-      $deposit = $this->save();
+	public function deposit(float $value):Array
+	{
+		$totalBefore = $this->amount?$this->amount:0;
+		$this->amount += number_format($value, 2, '.', '');
+		$deposit = $this->save();
 
-      if ($deposit)
-        return [
-          'success' => true,
-          'message' => 'Sucesso ao Recarregar'
-        ];
+		$historic = auth()->user()->historics()->create([
+				'type'         => 'I',
+				'amount'       => $value,
+				'total_before' => $totalBefore,
+				'total_after'  => $this->amount,
+				'date'         => date('Ymd'),
+			]);
 
-      return [
-        'success' => false,
-        'message' => 'Falha ao Recarregar'
-      ];
-    }
+		if ($deposit && $historic) {
+			return [
+				'success' => true,
+				'message' => 'Sucesso ao Recarregar'
+			];
+		}
+
+		return [
+			'success' => false,
+			'message' => 'Falha ao Recarregar'
+		];
+	}
 }
