@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MoneyValidationFormRequest;
+use Illuminate\Http\Request;
 use App\Models\Balance;
 
 class BalanceController extends Controller {
@@ -52,4 +53,15 @@ class BalanceController extends Controller {
 			->back()
 			->with('error', $response['message']);
 	}
+
+	public function transfer()
+	{
+		return view('admin.balance.transfer');
+	}
+
+	public function confirmTransfer(Request $request)
+	{
+		dd($request->all());
+	}
+
 }
