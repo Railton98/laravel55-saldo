@@ -8,20 +8,25 @@ use Illuminate\Http\Request;
 use App\Models\Balance;
 use App\User;
 
-class BalanceController extends Controller {
+class BalanceController extends Controller
+{
+	private $totalPage = 2;
 
-	public function index() {
+	public function index()
+	{
 		$balance = auth()->user()->balance;
 		$amount  = $balance?$balance->amount:0;
 
 		return view('admin.balance.index', compact('amount'));
 	}
 
-	public function deposit() {
+	public function deposit()
+	{
 		return view('admin.balance.deposit');
 	}
 
-	public function depositStore(MoneyValidationFormRequest $request) {
+	public function depositStore(MoneyValidationFormRequest $request)
+	{
 		$balance  = auth()->user()->balance()->firstOrCreate([]);
 		$response = $balance->deposit($request->value);
 
@@ -36,11 +41,13 @@ class BalanceController extends Controller {
 			->with('error', $response['message']);
 	}
 
-	public function withdraw() {
+	public function withdraw()
+	{
 		return view('admin.balance.withdraw');
 	}
 
-	public function withdrawStore(MoneyValidationFormRequest $request) {
+	public function withdrawStore(MoneyValidationFormRequest $request)
+	{
 		$balance  = auth()->user()->balance()->firstOrCreate([]);
 		$response = $balance->withdraw($request->value);
 
@@ -103,7 +110,10 @@ class BalanceController extends Controller {
 
 		public function historic()
 		{
-			$historics = auth()->user()->historics()->with(['userSender'])->get();
+			$historics = auth()->user()
+															->historics()
+															->with(['userSender'])
+															->paginate($this->totalPage);
 
 			return view('admin.balance.historics', compact('historics'));
 		}
