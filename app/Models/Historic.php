@@ -45,4 +45,21 @@ class Historic extends Model
 	{
 		return Carbon::parse($value)->format('d/m/Y');
 	}
+
+	public function search(Array $data, $totalPage)
+	{
+		return $this->where(function($query) use ($data) {
+			if (isset($data['id'])) {
+				$query->where('id', $data['id']);
+			}
+			if (isset($data['date'])) {
+				$query->where('date', $data['date']);
+			}
+			if (isset($data['type'])) {
+				$query->where('type', $data['type']);
+			}
+		})//->toSql(); dd($historics);
+		->paginate($totalPage);
+	}
+
 }
