@@ -14,6 +14,19 @@
     <div class="box">
       <div class="box-header">
 
+        <form class="form form-inline" action="{{ route('historic.search') }}" method="POST">
+          {!! csrf_field() !!}
+          <input type="text" name="id" class="form-control" placeholder="ID">
+          <input type="date" name="date" class="form-control">
+          <select class="form-control" name="type">
+            <option value="">-- Selecione o Tipo --</option>
+            @foreach ($types as $key => $type)
+              <option value="{{ $key }}">{{ $type }}</option>
+            @endforeach
+          </select>
+          <button type="submit" class="btn btn-primary">Pesquisar</button>
+        </form>
+
       </div>
       <div class="box-body">
         <table class="table table-bordered table-hover">
